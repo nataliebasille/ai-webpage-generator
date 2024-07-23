@@ -5,16 +5,22 @@
   "type": "module",
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "NODE_ENV=development next dev",
     "lint": "next lint",
     "start": "next start"
   },
   "dependencies": {
+    "@natcore/design-system-core": "https://gitpkg.now.sh/nataliebasille/natcore-design-system/packages/core?main",
     "@t3-oss/env-nextjs": "^0.10.1",
+    "@upstash/ratelimit": "^2.0.1",
+    "@upstash/redis": "^1.33.0",
     "geist": "^1.3.0",
+    "html-react-parser": "^5.1.12",
     "next": "^14.2.4",
+    "openai": "^4.53.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "server-only": "^0.0.1",
     "zod": "^3.23.3"
   },
   "devDependencies": {
