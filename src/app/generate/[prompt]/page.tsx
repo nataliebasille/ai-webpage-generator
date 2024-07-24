@@ -92,20 +92,20 @@ const LlmCaller = async ({ prompt }: { prompt: string }) => {
 export default function GeneratorPage({ params: { prompt } }: GeneratorProps) {
   prompt = prompt.slice(0, MAX_CONTENT_LENGTH);
   return (
-    <RateLimit>
-      <Suspense
-        fallback={
-          <div className="flex h-dvh w-dvw items-center justify-center">
-            <div className="flex flex-col">
-              <div
-                className="radial-progress m-auto animate-spin"
-                style={{ "--progress": "25%" } as CSSProperties}
-              />
-              Generating your webpage...
-            </div>
+    <Suspense
+      fallback={
+        <div className="flex h-dvh w-dvw items-center justify-center">
+          <div className="flex flex-col">
+            <div
+              className="radial-progress m-auto animate-spin"
+              style={{ "--progress": "25%" } as CSSProperties}
+            />
+            Generating your webpage...
           </div>
-        }
-      >
+        </div>
+      }
+    >
+      <RateLimit>
         <div className="flex h-dvh w-dvw flex-col">
           <div className="flex w-full flex-initial items-center gap-2 bg-[#ffcc00] p-3 text-base text-gray-800">
             <svg
@@ -130,7 +130,7 @@ export default function GeneratorPage({ params: { prompt } }: GeneratorProps) {
             <LlmCaller prompt={prompt} />
           </div>
         </div>
-      </Suspense>
-    </RateLimit>
+      </RateLimit>
+    </Suspense>
   );
 }
