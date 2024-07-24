@@ -1,14 +1,22 @@
 "use client";
 
-import { type CSSProperties, useState } from "react";
-import { useFormStatus } from "react-dom";
+import { type CSSProperties, forwardRef, useState } from "react";
 
-export default function PromptInput({ maxLength }: { maxLength: number }) {
+export default forwardRef(function PromptInput(
+  {
+    maxLength,
+    pending,
+  }: {
+    maxLength: number;
+    pending: boolean;
+  },
+  ref: React.ForwardedRef<HTMLInputElement>,
+) {
   const [prompt, setPrompt] = useState("");
-  const { pending } = useFormStatus();
   return (
     <div className="form-control form-control-primary">
       <input
+        ref={ref}
         autoFocus
         type="text"
         name="prompt"
@@ -55,4 +63,4 @@ export default function PromptInput({ maxLength }: { maxLength: number }) {
       </span>
     </div>
   );
-}
+});
