@@ -1,12 +1,12 @@
 import OpenAI from "openai";
-import { type CSSProperties, Fragment, Suspense } from "react";
+import { type CSSProperties, Suspense } from "react";
 import { env } from "~/env.js";
 import { LLM_RESPONSE_HTML_ELEMENT_ID, MAX_CONTENT_LENGTH } from "~/constants";
 import { RateLimit } from "~/app/rate-limit";
 import LlmResponseContentPieceRenderer from "./_components/llm-response-content-piece-renderer";
 import { LlmResponseContentProvider } from "./_components/llm-response-content-context";
 
-export const dynamic = "force-static";
+// export const dynamic = "force-static";
 
 type GeneratorProps = {
   params: {
