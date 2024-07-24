@@ -30,14 +30,14 @@ export const LlmResponseContentProvider = ({
   const append = useCallback((content: string) => {
     contentRef.current += content;
 
+    if (!elementRef.current) {
+      elementRef.current =
+        document.getElementById(LLM_RESPONSE_HTML_ELEMENT_ID) ?? undefined;
+    }
+
     if (elementRef.current) {
       elementRef.current.innerHTML = contentRef.current;
     }
-  }, []);
-
-  useLayoutEffect(() => {
-    elementRef.current =
-      document.getElementById(LLM_RESPONSE_HTML_ELEMENT_ID) ?? undefined;
   }, []);
 
   const contextValue = useMemo(
