@@ -96,14 +96,14 @@ export default function GeneratorPage({ params: { prompt } }: GeneratorProps) {
         }
       >
         <div className="flex h-dvh w-dvw flex-col">
-          <div className="align-items center flex w-full flex-initial gap-2 bg-[#ffcc00] p-3 text-base text-gray-800">
+          <div className="flex w-full flex-initial items-center gap-2 bg-[#ffcc00] p-3 text-base text-gray-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-10"
+              className="size-20 md:size-10"
             >
               <path
                 strokeLinecap="round"
