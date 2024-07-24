@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { type CSSProperties, Suspense } from "react";
+import { type CSSProperties, Fragment, Suspense } from "react";
 import { env } from "~/env.js";
 import { LLM_RESPONSE_HTML_ELEMENT_ID, MAX_CONTENT_LENGTH } from "~/constants";
 import { RateLimit } from "~/app/rate-limit";
@@ -18,12 +18,14 @@ const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
 const LlmResponse = async ({
   iterator,
+  first = false,
 }: {
   iterator: AsyncIterator<
     OpenAI.Chat.Completions.ChatCompletionChunk,
     unknown,
     undefined
   >;
+  first?: boolean;
 }) => {
   const value = await iterator.next();
 
@@ -33,14 +35,18 @@ const LlmResponse = async ({
 
   const content = value.value.choices[0]?.delta?.content ?? "";
 
-  return (
+  const context = (
     <>
       <LlmResponseContentPieceRenderer content={content} />
-      <Suspense fallback={<></>}>
-        <LlmResponse iterator={iterator} />
-      </Suspense>
+      <LlmResponse iterator={iterator} />
     </>
   );
+
+  if (first) {
+    return context;
+  }
+
+  return <Suspense fallback={<></>}>{context}</Suspense>;
 };
 
 const LlmCaller = async ({ prompt }: { prompt: string }) => {
@@ -84,7 +90,7 @@ const LlmCaller = async ({ prompt }: { prompt: string }) => {
   return (
     <LlmResponseContentProvider>
       <div id={LLM_RESPONSE_HTML_ELEMENT_ID} />
-      <LlmResponse iterator={asyncIterator} />
+      <LlmResponse iterator={asyncIterator} first />
     </LlmResponseContentProvider>
   );
 };

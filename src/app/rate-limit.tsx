@@ -16,9 +16,5 @@ const RateLimitChecker = async ({ children }: { children: ReactNode }) => {
 };
 
 export function RateLimit({ children }: { children: ReactNode }) {
-  return (
-    <Suspense fallback={<></>}>
-      <RateLimitChecker>{children}</RateLimitChecker>
-    </Suspense>
-  );
+  return <RateLimitChecker>{children}</RateLimitChecker>;
 }
