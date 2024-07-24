@@ -1,9 +1,10 @@
 import OpenAI from "openai";
 import { type CSSProperties, Suspense } from "react";
 import { env } from "~/env.js";
-import parse from "html-react-parser";
-import { MAX_CONTENT_LENGTH } from "~/constants";
+import { LLM_RESPONSE_HTML_ELEMENT_ID, MAX_CONTENT_LENGTH } from "~/constants";
 import { RateLimit } from "~/app/rate-limit";
+import LlmResponseContentPieceRenderer from "./_components/llm-response-content-piece-renderer";
+import { LlmResponseContentProvider } from "./_components/llm-response-content-context";
 
 export const dynamic = "force-static";
 
@@ -24,17 +25,22 @@ const LlmResponse = async ({
     undefined
   >;
 }) => {
-  let content = "";
-  while (true) {
-    const value = await iterator.next();
+  const value = await iterator.next();
 
-    if (value.done) {
-      break;
-    }
-
-    content += value.value.choices[0]?.delta?.content ?? "";
+  if (value.done) {
+    return <></>;
   }
-  return parse(content);
+
+  const content = value.value.choices[0]?.delta?.content ?? "";
+
+  return (
+    <>
+      <LlmResponseContentPieceRenderer content={content} />
+      <Suspense fallback={<></>}>
+        <LlmResponse iterator={iterator} />
+      </Suspense>
+    </>
+  );
 };
 
 const LlmCaller = async ({ prompt }: { prompt: string }) => {
@@ -75,7 +81,12 @@ const LlmCaller = async ({ prompt }: { prompt: string }) => {
 
   const asyncIterator = stream[Symbol.asyncIterator]();
 
-  return <LlmResponse iterator={asyncIterator} />;
+  return (
+    <LlmResponseContentProvider>
+      <div id={LLM_RESPONSE_HTML_ELEMENT_ID} />
+      <LlmResponse iterator={asyncIterator} />
+    </LlmResponseContentProvider>
+  );
 };
 
 export default function GeneratorPage({ params: { prompt } }: GeneratorProps) {
