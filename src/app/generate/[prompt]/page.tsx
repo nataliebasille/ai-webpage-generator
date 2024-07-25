@@ -5,6 +5,7 @@ import { LLM_RESPONSE_HTML_ELEMENT_ID, MAX_CONTENT_LENGTH } from "~/constants";
 import { RateLimit } from "~/app/rate-limit";
 import LlmResponseContentPieceRenderer from "./_components/llm-response-content-piece-renderer";
 import { LlmResponseContentProvider } from "./_components/llm-response-content-context";
+import { callLlm } from "~/server/llm";
 
 // export const dynamic = "force-static";
 
@@ -13,8 +14,6 @@ type GeneratorProps = {
     prompt: string;
   };
 };
-
-const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
 const LlmResponse = async ({
   iterator,
@@ -50,47 +49,12 @@ const LlmResponse = async ({
 };
 
 const LlmCaller = async ({ prompt }: { prompt: string }) => {
-  const stream = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    temperature: 1.2,
-    stream: true,
-    max_tokens: 6000,
-    messages: [
-      {
-        role: "system",
-        content: `
-            You are a world class web developer. You're job is to produce an interesting and
-            creative HTML doc for a user based on their prompt. 
-            The HTML will be embedded into a webpage so it needs to be valid HTML.
-            
-            You must adhere to the following rules:
-            1. For the html, the first element must be a <div> tag.
-            2. The webpage must be responsive and have a modern design.
-            3. Do not wrap the response in markup 
-            4. You can use tailwindcss for styling. 
-            5. Generate a color scheme that is relevant to the user's prompt
-            6. You are not allowed to generate any javascript code or script tags.
-            7. If the users prompt contains any dangerous or illegal content,
-                the page should reprimand the user rather than displaying the content
-            8. Do not generate a copyright notice 
-            9. Must generate a response long enough so the page scrolls
-            10. Must include 3 or more sections of information
-            11. Do not include any information about the technology used to create the webpage
-        `,
-      },
-      {
-        role: "user",
-        content: `My prompt is: ${prompt}`,
-      },
-    ],
-  });
-
-  const asyncIterator = stream[Symbol.asyncIterator]();
+  const response = await callLlm(prompt);
 
   return (
     <LlmResponseContentProvider>
       <div id={LLM_RESPONSE_HTML_ELEMENT_ID} />
-      <LlmResponse iterator={asyncIterator} first />
+      <LlmResponse iterator={response} first />
     </LlmResponseContentProvider>
   );
 };

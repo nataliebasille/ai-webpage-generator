@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { Suspense, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { ratelimit } from "~/server/ratelimit";
 
 const RateLimitChecker = async ({ children }: { children: ReactNode }) => {
