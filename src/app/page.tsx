@@ -1,21 +1,17 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import PromptInput from "./prompt-input";
 import { MAX_CONTENT_LENGTH } from "~/constants";
-import { useRef, useState } from "react";
 
 export default function HomePage() {
-  const router = useRouter();
-  const promptInputRef = useRef<HTMLInputElement>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const submitPrompt = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitting(true);
-    const prompt = promptInputRef.current?.value.slice(0, MAX_CONTENT_LENGTH);
-    router.push(`/generate/${prompt}`);
-  };
+  const submitPrompt = async (formData: FormData) => {
+    "use server";
+    const prompt = (formData.get("prompt")?.toString() ?? "").slice(
+      0,
+      MAX_CONTENT_LENGTH,
+    );
 
+    redirect(`/generate/${prompt}`);
+  };
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-bl from-primary-50 to-secondary-50 p-3">
       <article className="container mx-auto max-w-3xl">
@@ -23,12 +19,8 @@ export default function HomePage() {
           Generate a webpage based on a short description
         </h1>
 
-        <form onSubmit={submitPrompt}>
-          <PromptInput
-            ref={promptInputRef}
-            maxLength={MAX_CONTENT_LENGTH}
-            pending={submitting}
-          />
+        <form action={submitPrompt}>
+          <PromptInput maxLength={MAX_CONTENT_LENGTH} />
         </form>
       </article>
     </main>
