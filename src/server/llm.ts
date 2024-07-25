@@ -14,7 +14,7 @@ export async function callLlm(prompt: string) {
       {
         role: "system",
         content: `
-            You're job is to produce an interesting and
+            Your job is to produce an interesting and
             creative HTML doc for a user based on their prompt. 
             The HTML will be embedded into a webpage so it needs to be valid HTML.
             
